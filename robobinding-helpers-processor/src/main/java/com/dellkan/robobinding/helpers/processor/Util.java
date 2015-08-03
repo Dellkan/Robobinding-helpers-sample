@@ -1,4 +1,23 @@
+/*
+ * Copyright (C) 2013 Google, Inc.
+ * Copyright (C) 2013 Square, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.dellkan.robobinding.helpers.processor;
+
+import com.squareup.javapoet.ClassName;
+import com.squareup.javapoet.TypeName;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;
@@ -26,6 +45,7 @@ import javax.lang.model.util.SimpleTypeVisitor6;
 
 /**
  * Utilities for handling types in annotation processors
+ * Copied and slightly modified from https://github.com/square/dagger/blob/master/compiler/src/main/java/dagger/internal/codegen/Util.java
  */
 final class Util {
     private Util() {
@@ -85,7 +105,7 @@ final class Util {
                 return null;
             }
             @Override public Void visitPrimitive(PrimitiveType primitiveType, Void v) {
-                result.append(primitiveToString((PrimitiveType) type));
+                result.append(box((PrimitiveType) type));
                 return null;
             }
             @Override public Void visitArray(ArrayType arrayType, Void v) {
@@ -119,6 +139,33 @@ final class Util {
             @Override protected Void defaultAction(TypeMirror typeMirror, Void v) {
                 throw new UnsupportedOperationException(
                         "Unexpected TypeKind " + typeMirror.getKind() + " for "  + typeMirror);
+            }
+        }, null);
+    }
+
+    /** Returns a string for {@code type}. Primitive types are always boxed. */
+    public static TypeName injectableType(TypeMirror type) {
+        return type.accept(new SimpleTypeVisitor6<TypeName, Void>() {
+            @Override public TypeName visitPrimitive(PrimitiveType primitiveType, Void v) {
+                return box(primitiveType);
+            }
+
+            @Override public TypeName visitError(ErrorType errorType, Void v) {
+                // Error type found, a type may not yet have been generated, but we need the type
+                // so we can generate the correct code in anticipation of the type being available
+                // to the compiler.
+
+                // Paramterized types which don't exist are returned as an error type whose name is "<any>"
+                if ("<any>".equals(errorType.toString())) {
+                    throw new CodeGenerationIncompleteException(
+                            "Type reported as <any> is likely a not-yet generated parameterized type.");
+                }
+
+                return ClassName.bestGuess(errorType.toString());
+            }
+
+            @Override protected TypeName defaultAction(TypeMirror typeMirror, Void v) {
+                return TypeName.get(typeMirror);
             }
         }, null);
     }
@@ -232,26 +279,26 @@ final class Util {
         }
     }
 
-    private static String primitiveToString(PrimitiveType primitiveType) {
+    private static TypeName box(PrimitiveType primitiveType) {
         switch (primitiveType.getKind()) {
             case BYTE:
-                return "byte";
+                return ClassName.get(Byte.class);
             case SHORT:
-                return "short";
+                return ClassName.get(Short.class);
             case INT:
-                return "int";
+                return ClassName.get(Integer.class);
             case LONG:
-                return "long";
+                return ClassName.get(Long.class);
             case FLOAT:
-                return "float";
+                return ClassName.get(Float.class);
             case DOUBLE:
-                return "double";
+                return ClassName.get(Double.class);
             case BOOLEAN:
-                return "boolean";
+                return ClassName.get(Boolean.class);
             case CHAR:
-                return "char";
+                return ClassName.get(Character.class);
             case VOID:
-                return "void";
+                return ClassName.get(Void.class);
             default:
                 throw new AssertionError();
         }

@@ -3,6 +3,11 @@ package com.dellkan.robobinding.helpers.processor;
 import javax.lang.model.element.Element;
 import javax.lang.model.type.TypeKind;
 
+/**
+ * Used by freemarker, during compile-time annotation processing.
+ * Describes attributes marked with {@link com.dellkan.robobinding.helpers.modelgen.Get Get} and
+ * {@link com.dellkan.robobinding.helpers.modelgen.GetSet GetSet}
+ */
 public class GetSetDescriptor {
     private boolean isSetter;
     private Element element;
@@ -35,10 +40,15 @@ public class GetSetDescriptor {
     }
 
     public boolean isNumeric() {
-        return
-                element.asType().getKind().equals(TypeKind.INT) ||
-                element.asType().getKind().equals(TypeKind.FLOAT) ||
-                element.asType().getKind().equals(TypeKind.DOUBLE) ||
-                element.asType().getKind().equals(TypeKind.LONG);
+        String type = Util.typeToString(element.asType());
+        switch (type) {
+            case "java.lang.Integer":
+            case "java.lang.Float":
+            case "java.lang.Double":
+            case "java.lang.Long":
+                return true;
+            default:
+                return false;
+        }
     }
 }

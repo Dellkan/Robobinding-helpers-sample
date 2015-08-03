@@ -1,4 +1,4 @@
-package com.dellkan.john.robobindingtests.annotations;
+package com.dellkan.robobinding.helpers.validation.validators;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;

@@ -1,8 +1,11 @@
-package templates;
 
-public <#if item.boolean>boolean is<#else>String get</#if>${item.name?cap_first}() {
+    public <#if item.boolean>boolean is<#else>String get</#if>${item.name?cap_first}() {
         <#if item.numeric>
-        return "" + this.data.${item.name};
+        ${item.type} value = this.data.${item.name};
+        if (value != null) {
+            return "" + value;
+        }
+        return null;
         <#else>
         return this.data.${item.name};
         </#if>
@@ -12,7 +15,7 @@ public <#if item.boolean>boolean is<#else>String get</#if>${item.name?cap_first}
     public void set${item.name?cap_first}(<#if item.boolean>boolean value<#else>String value</#if>) {
         <#if item.numeric>
         try {
-            this.data.${item.name} = <#if item.type == "int">Integer<#else>${item.type?cap_first}</#if>.valueOf(value);
+            this.data.${item.name} = ${item.type}.valueOf(value);
         } catch (NumberFormatException e) {
 
         }

@@ -1,4 +1,6 @@
-package com.dellkan.robobinding.helpers.validation;
+package com.dellkan.john.robobindingtests.Validation.validators;
+
+import com.dellkan.john.robobindingtests.Validation.ComparisonTypes;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -10,10 +12,10 @@ import java.lang.annotation.Target;
 @Documented
 @Target(ElementType.FIELD)
 @Inherited
-@Retention(RetentionPolicy.CLASS)
+@Retention(RetentionPolicy.RUNTIME)
 public @interface ValidateLength {
     ComparisonTypes comparison() default ComparisonTypes.LENGTH_EXACTLY;
-    int min();
-    int max() default 0;
+    double min();
+    double max() default 0;
     int error() default 0;
 }

@@ -11,7 +11,8 @@
     tools:context=".MainActivity">
     <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        bind:error="{textError}">
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -48,9 +49,16 @@
             bind:text="${text2}"
             bind:visibility="{more}"/>
     </android.support.design.widget.TextInputLayout>
+    <Spinner
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        bind:source="{testData}"
+        bind:itemLayout="@layout/testrow"
+        bind:onItemSelected="onSpinnerItemSelected" />
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        bind:enabled="{valid}"
         bind:text="{text}" />
 
 </LinearLayout>

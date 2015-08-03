@@ -1,16 +1,35 @@
-package templates;
-
 <#list validators as item>
+
+    private ValidationProcessor ${item.name}ErrorProcessor;
 
     @DependsOnStateOf({"${item.name}"})
     public boolean is${item.name?cap_first}Valid() {
-        return ${item.evaluationExpression};
+        if (this.${item.name}ErrorProcessor == null) {
+            try {
+                Annotation annotation = this.data.getClass().getDeclaredField("${item.name}").getAnnotation(${item.annotationType}.class);
+                this.${item.name}ErrorProcessor = new ${item.processorType}(annotation);
+            } catch (NoSuchFieldException e) {
+               e.printStackTrace();
+            }
+        }
+        if (this.${item.name}ErrorProcessor != null) {
+            return this.${item.name}ErrorProcessor.isValid(this.data.${item.name});
+        }
+        return false;
     }
 
     @DependsOnStateOf({"${item.name}"})
     public int get${item.name?cap_first}Error() {
-        if (!this.is${item.name?cap_first}Valid()) {
-            return ${item.errorResource};
+        if (this.${item.name}ErrorProcessor == null) {
+            try {
+                Annotation annotation = this.data.getClass().getDeclaredField("${item.name}").getAnnotation(${item.annotationType}.class);
+                this.${item.name}ErrorProcessor = new ${item.processorType}(annotation);
+            } catch (NoSuchFieldException e) {
+               e.printStackTrace();
+            }
+        }
+        if (this.${item.name}ErrorProcessor != null) {
+            return this.${item.name}ErrorProcessor.getError(this.data.${item.name});
         }
         return 0;
     }
@@ -27,6 +46,7 @@ package templates;
         }
     }
 
+    <#list validators>@DependsOnStateOf({<#items as item>"${item.name}"<#sep>, </#items>})</#list>
     public boolean isValid() {
         return <#list validators as item>is${item.name?cap_first}Valid()<#sep> &&
             <#else>true</#list>;

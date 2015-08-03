@@ -1,4 +1,4 @@
-package com.dellkan.john.robobindingtests.annotations;
+package com.dellkan.john.robobindingtests.Validation.validators;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -8,10 +8,9 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 @Documented
-@Target(ElementType.METHOD)
+@Target(ElementType.FIELD)
 @Inherited
 @Retention(RetentionPolicy.CLASS)
-public @interface ValidateRange {
-    int min() default 0;
-    int max() default 0;
+public @interface ValidatePattern {
+    String value();
 }

@@ -7,12 +7,12 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Mark a field on your {@link PresentationModel} to get both a getter, and a setter auto-generated for it.
- * boolean fields get is{Name} instead of get{Name}. Numeric types are converted to strings.
+ * Mark a field on your {@link PresentationModel} to get a setter auto-generated for it.
+ * Numeric types are converted to strings.
  */
 @Documented
 @Retention(RetentionPolicy.SOURCE)
 @Target(ElementType.FIELD)
-public @interface GetSet {
+public @interface Set {
     String[] dependsOn() default {};
 }
