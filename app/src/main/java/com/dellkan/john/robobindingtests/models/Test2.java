@@ -1,23 +1,21 @@
 package com.dellkan.john.robobindingtests.models;
 
-import android.util.Log;
-
 import com.dellkan.john.robobindingtests.R;
 import com.dellkan.john.robobindingtests.Validation.ComparisonTypes;
 import com.dellkan.john.robobindingtests.Validation.validators.ValidateLength;
 import com.dellkan.john.robobindingtests.Validation.validators.ValidatePattern;
-import com.dellkan.robobinding.helpers.model.Wrapper;
+import com.dellkan.robobinding.helpers.model.ListItem;
+import com.dellkan.robobinding.helpers.model.PresentationModelWrapper;
+import com.dellkan.robobinding.helpers.modelgen.DependsOnStateOf;
 import com.dellkan.robobinding.helpers.modelgen.GetSet;
-import com.dellkan.robobinding.helpers.modelgen.ItemPresentationModel;
+import com.dellkan.robobinding.helpers.modelgen.ListItems;
 import com.dellkan.robobinding.helpers.modelgen.PresentationModel;
-
-import org.robobinding.itempresentationmodel.ItemContext;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @PresentationModel
-public class Test2 extends Wrapper {
+public class Test2 extends PresentationModelWrapper {
     @ValidateLength(min=11, error = R.string.abc_action_bar_home_description)
     @GetSet
     public String text;
@@ -29,6 +27,10 @@ public class Test2 extends Wrapper {
     @GetSet
     public boolean more;
 
+    public boolean isMore() {
+        return more;
+    }
+
     @ValidateLength(comparison = ComparisonTypes.RANGE_INCLUDING, min = 2, max = 12, error = R.string.invalid)
     @GetSet
     public float text2;
@@ -37,43 +39,35 @@ public class Test2 extends Wrapper {
     @GetSet()
     public String test3 = "";
 
-    public void test() {
-        try {
-            ValidateLength annotation = (ValidateLength) this.getClass().getDeclaredField("test").getClass().getAnnotation(ValidateLength.class);
-        } catch (NoSuchFieldException e) {
-            e.printStackTrace();
+    @ListItems()
+    protected ListItem<ItemTest> testList = new ListItem<>();
+
+    @ListItems()
+    protected ListItem<ItemTest2> testList2 = new ListItem<>();
+
+    @DependsOnStateOf("testListSelected")
+    public boolean getGoodItemFromSpinnerSelected() {
+        if (testList.getSelectedItem() != null) {
+            return testList.getSelectedItem().getSpinnertext().contains("1");
         }
+        return false;
     }
 
-    public void onSpinnerItemSelected() {
-        Log.e("test", "test");
+    public int test() {
+        return 1;
     }
 
-    @ItemPresentationModel()
-    protected List<Test> testList = new ArrayList<>();
+    public Test2() {
+        testList.addItem(new ItemTest("test1"));
+        testList.addItem(new ItemTest("test2"));
+        testList.addItem(new ItemTest("test3"));
+        testList.addItem(new ItemTest("test4"));
+        testList.addItem(new ItemTest("test5"));
 
-    public List<Test> getTestData() {
-        if (testList.isEmpty()) {
-            testList.add(new Test("Test"));
-            testList.add(new Test("Test2"));
-            testList.add(new Test("Test3"));
-            testList.add(new Test("Test4"));
-        }
-        return testList;
-    }
-
-    @PresentationModel
-    public static class Test implements org.robobinding.itempresentationmodel.ItemPresentationModel<Test> {
-        @GetSet
-        private String text;
-
-        public Test(String text) {
-            this.text = text;
-        }
-
-        @Override
-        public void updateData(Test test, ItemContext itemContext) {
-            this.text = test.text;
-        }
+        testList2.addItem(new ItemTest2("test1"));
+        testList2.addItem(new ItemTest2("test2"));
+        testList2.addItem(new ItemTest2("test3"));
+        testList2.addItem(new ItemTest2("test4"));
+        testList2.addItem(new ItemTest2("test5"));
     }
 }

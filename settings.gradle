@@ -1,1 +1,1 @@
-include ':app', 'robobinding-helpers-api', 'robobinding-helpers-processor'
+include ':app'

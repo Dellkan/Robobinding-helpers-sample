@@ -51,6 +51,7 @@ repositories {
     maven {
         url  "https://dl.bintray.com/dellkan/maven/"
     }
+    mavenLocal()
 }
 
 ext {
@@ -68,9 +69,11 @@ dependencies {
     compile 'com.android.support:appcompat-v7:22.2.1'
 
 
-    apt project(":robobinding-helpers-processor")
-    compile project(':robobinding-helpers-api')
-	compile 'org.freemarker:freemarker:2.3.23'
+//    apt project(":robobinding-helpers-processor")
+//    compile project(':robobinding-helpers-api')
+//	compile 'org.freemarker:freemarker:2.3.23'
 //    apt 'com.dellkan:robobinding-helpers-processor:0.1.18'
 //    compile 'com.dellkan:robobinding-helpers-api:0.1.18'
+    compile 'com.dellkan:robobinding-helpers-api:0.1.27'
+    apt 'com.dellkan:robobinding-helpers-processor:0.1.27'
 }

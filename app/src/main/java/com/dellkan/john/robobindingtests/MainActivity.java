@@ -6,6 +6,7 @@ import android.support.design.widget.TextInputLayout;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 
 import com.dellkan.john.robobindingtests.models.Test2;
 import com.dellkan.john.robobindingtests.viewattributes.TextInputLayoutExtensions;
